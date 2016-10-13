@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+    <property>
+      <name>http.agent.name</name>
+      <value>tomsnutch</value>
+    </property>
+    <property>
+      <name>http.timeout</name>
+      <value>10000</value>
+      <description>The default network timeout, in milliseconds.</description>
+    </property>
+    <property>
+      <name>db.injector.overwrite</name>
+      <value>true</value>
+      <description>Whether existing records in the CrawlDB will be overwritten
+      by injected records.
+      </description>
+    </property>
+    <property>
+      <name>db.injector.update</name>
+      <value>true</value>
+      <description>If true existing records in the CrawlDB will be updated with
+      injected records. Old meta data is preserved. The db.injector.overwrite
+      parameter has precedence.
+      </description>
+    </property>
+    <property>
+      <name>db.max.inlinks</name>
+      <value>100000</value>
+      <description>Maximum number of Inlinks per URL to be kept in LinkDb.
+      If "invertlinks" finds more inlinks than this number, only the first
+      N inlinks will be stored, and the rest will be discarded.
+      </description>
+    </property>
+    <property>
+      <name>solr.server.url</name>
+      <value>http://127.0.0.1:8983/solr</value>
+      <description>
+          Defines the Solr URL into which data should be indexed using the
+          indexer-solr plugin.
+      </description>
+    </property>
+    <property>
+      <name>parser.skip.truncated</name>
+      <value>false</value>
+      <description>Boolean value for whether we should skip parsing for truncated documents. By default this 
+      property is activated due to extremely high levels of CPU which parsing can sometimes take.  
+      </description>
+    </property>
+    <property>
+      <name>anchorIndexingFilter.deduplicate</name>
+      <value>true</value>
+      <description>With this enabled the indexer will case-insensitive deduplicate anchors
+      before indexing. This prevents possible hundreds or thousands of identical anchors for
+      a given page to be indexed but will affect the search scoring (i.e. tf=1.0f).
+      </description>
+    </property>
+    <property>
+      <name>indexer.max.content.length</name>
+      <value>10000</value>
+      <description>The maximum number of characters of a content that are indexed.
+      Content beyond the limit is truncated. A value of -1 disables this check.
+      </description>
+    </property>
+    <property>
+      <name>fetcher.verbose</name>
+      <value>false</value>
+      <description>If true, fetcher will log more verbosely.</description>
+    </property>
+    
+    <property>
+      <name>fetcher.maxNum.threads</name>
+      <value>100</value>  
+      <description>Max number of fetch threads allowed when using fetcher.bandwidth.target. Defaults to fetcher.threads.fetch if unspecified or
+      set to a value lower than it. </description>
+    </property>
+    
+    <property>
+      <name>fetcher.server.min.delay</name>
+      <value>1.0</value>
+      <description>The minimum number of seconds the fetcher will delay between 
+      successive requests to the same server. This value is applicable ONLY
+      if fetcher.threads.per.queue is greater than 1 (i.e. the host blocking
+      is turned off).</description>
+    </property>
+    <property>
+      <name>fetcher.threads.fetch</name>
+      <value>50</value>
+      <description>The number of FetcherThreads the fetcher should use.
+      This is also determines the maximum number of requests that are
+      made at once (each FetcherThread handles one connection). The total
+      number of threads running in distributed mode will be the number of
+      fetcher threads * number of nodes as fetcher has one map task per node.
+      </description>
+    </property>
+    <property>
+      <name>fetcher.queue.depth.multiplier</name>
+      <value>100</value>
+      <description>(EXPERT)The fetcher buffers the incoming URLs into queues based on the [host|domain|IP]
+      (see param fetcher.queue.mode). The depth of the queue is the number of threads times the value of this parameter.
+      A large value requires more memory but can improve the performance of the fetch when the order of the URLS in the fetch list
+      is not optimal.
+      </description>
+    </property>
+    <property>
+      <name>fetcher.threads.per.queue</name>
+      <value>5</value>
+      <description>This number is the maximum number of threads that
+        should be allowed to access a queue at one time. Setting it to 
+        a value > 1 will cause the Crawl-Delay value from robots.txt to
+        be ignored and the value of fetcher.server.min.delay to be used
+        as a delay between successive requests to the same server instead 
+        of fetcher.server.delay.
+       </description>
+    </property>
+    <property>
+      <name>fetcher.server.delay</name>
+      <value>2.0</value>
+      <description>The number of seconds the fetcher will delay between 
+       successive requests to the same server. Note that this might get
+       overriden by a Crawl-Delay from a robots.txt and is used ONLY if 
+       fetcher.threads.per.queue is set to 1.
+       </description>
+    </property>
+    <property>
+      <name>indexer.skip.notmodified</name>
+      <value>true</value>
+      <description>Whether the indexer will skip records with a db_notmodified status.
+      </description>
+    </property>
+    <property>
+      <name>parser.html.outlinks.ignore_tags</name>
+      <value>img,script,link</value>
+      <description>Comma separated list of HTML tags, from which outlinks 
+      shouldn't be extracted. Nutch takes links from: a, area, form, frame, 
+      iframe, script, link, img. If you add any of those tags here, it
+      won't be taken. Default is empty list. Probably reasonable value
+      for most people would be "img,script,link".</description>
+    </property>
+    <property>
+      <name>db.ignore.external.links</name>
+      <value>false</value>
+      <description>If true, outlinks leading from a page to external hosts
+      will be ignored. This is an effective way to limit the crawl to include
+      only initially injected hosts, without creating complex URLFilters.
+      </description>
+    </property>
+    <property>
+      <name>db.fetch.retry.max</name>
+      <value>3</value>
+      <description>The maximum number of times a url that has encountered
+      recoverable errors is generated for fetch.</description>
+    </property>
+    <property>
+      <name>generate.max.count</name>
+      <value>10000</value>
+      <description>The maximum number of urls in a single
+      fetchlist.  -1 if unlimited. The urls are counted according
+      to the value of the parameter generator.count.mode.
+      </description>
+    </property>
+    <property>
+      <name>scoring.depth.max</name>
+      <value>1000</value>
+      <description>Max depth value from seed allowed by default.
+      Can be overriden on a per-seed basis by specifying "_maxdepth_=VALUE"
+      as a seed metadata. This plugin adds a "_depth_" metadatum to the pages
+      to track the distance from the seed it was found from. 
+      The depth is used to prioritise URLs in the generation step so that
+      shallower pages are fetched first.
+      </description>
+    </property>
+    <property>
+      <name>db.max.outlinks.per.page</name>
+      <value>200</value>
+      <description>The maximum number of outlinks that we'll process for a page.
+      If this value is nonnegative (>=0), at most db.max.outlinks.per.page outlinks
+      will be processed for a page; otherwise, all outlinks will be processed.
+      </description>
+    </property>
+    
+    <!-- nutch plugins will be included -->
+    <property>
+      <name>plugin.includes</name>
+      <value>protocol-http|urlfilter-regex|parse-(html|tika)|index-(basic|metadata|anchor|content)|indexer-solr|scoring-opic|urlnormalizer-(pass|regex|basic)</value>
+      <description> </description>
+    </property>
+
+    <property>
+      <name>indexingfilter.order</name>
+      <value>org.tomstools.nutch.indexer.content.ContentIndexingFilter org.apache.nutch.indexer.basic.BasicIndexingFilter org.apache.nutch.indexer.metadata.MetadataIndexer</value>
+      <description>
+      </description>
+    </property>
+    
+    <!-- index field list from metadata -->
+    <property>
+      <name>index.parse.md</name>
+      <value>publish_time,author,source,summary,siteId</value>
+      <description> </description>
+    </property>
+
+    <property>
+      <name>indexer.min.content.length</name>
+      <value>1</value>
+      <description>The minimum length of content witch need index. Add by lotomer
+      </description>
+    </property>
+    <property>
+      <name>tm.parser.jdbc.driver</name>
+      <value>com.mysql.jdbc.Driver</value>
+      <description>The jdbc config. Add by lotomer</description>
+    </property>
+    <property>
+      <name>tm.parser.jdbc.url</name>
+      <value>jdbc:mysql://127.0.0.1:3306/common?useUnicode=true&amp;characterEncoding=UTF-8</value>
+      <description>The jdbc config. Add by lotomer</description>
+    </property>
+    <property>
+      <name>tm.parser.jdbc.user</name>
+      <value>mysql</value>
+      <description>The jdbc config. Add by lotomer</description>
+    </property>
+    <property>
+      <name>tm.parser.jdbc.password</name>
+      <value>mysql123</value>
+      <description>The jdbc config. Add by lotomer</description>
+    </property>
+</configuration>
+

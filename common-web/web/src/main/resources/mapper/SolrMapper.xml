@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.tomstools.web.persistence.SolrMapper">
+    <select id="selectLanguage" resultType="map"><![CDATA[
+        SELECT LANG_ID id,LANG_NAME name FROM T_M_LANGUAGE
+    ]]></select>
+    <select id="selectCountry" resultType="map"><![CDATA[
+        SELECT COUNTRY_CODE id, COUNTRY_NAME name FROM T_M_COUNTRY
+    ]]></select>
+    <select id="selectSiteType" resultType="map"><![CDATA[
+        SELECT SITE_TYPE_ID id,SITE_TYPE_NAME name,IS_VALID FROM T_CRAWL_M_SITE_TYPE
+        ]]><if test="IS_VALID != null">
+        	WHERE IS_VALID=#{IS_VALID}
+        </if><![CDATA[
+    ]]></select>
+    <select id="selectSite" resultType="map"><![CDATA[
+        SELECT s.SITE_ID id,s.SITE_NAME name,s.SITE_HOST,s.SITE_TYPE_ID,s.IS_VALID,t.SITE_TYPE_NAME FROM T_CRAWL_C_SITE s LEFT JOIN T_CRAWL_M_SITE_TYPE t ON (s.SITE_TYPE_ID=t.SITE_TYPE_ID) 
+        WHERE 1=1
+        ]]><if test="SITE_TYPE_ID != null">
+        	 AND s.SITE_TYPE_ID=#{SITE_TYPE_ID}
+        </if>
+        <if test="IS_VALID != null">
+        	AND s.IS_VALID=#{IS_VALID} AND t.IS_VALID=#{IS_VALID}
+        </if><![CDATA[
+    ]]></select>
+    
+    <!-- 
+    <insert id="saveStat">
+    	INSERT INTO T_POM_S_STAT (TYPE_ID,SIZE_ZM,SIZE_FM,SIZE_ZM_E,SIZE_FM_E,STAT_TIME) VALUES (#{TYPE_ID},#{SIZE_ZM},#{SIZE_FM},#{SIZE_ZM_E},#{SIZE_FM_E},#{STAT_TIME})
+    </insert> -->
+    
+    <select id="selectAlertLog" resultType="map"><![CDATA[
+        SELECT l.ID,l.ALERT_ID,l.ALERT_VALUE,l.CURRENT_VALUE,DATE_FORMAT(l.ALERT_TIME,'%Y-%m-%d %H:%i:%S') ALERT_TIME,l.NOTIFY_STATUS,s.NOTIFIERS,s.METRICS,
+		CASE WHEN l.NOTIFY_TIME IS NULL THEN NULL ELSE DATE_FORMAT(l.NOTIFY_TIME,'%Y-%m-%d %H:%i:%S') end NOTIFY_TIME,s.ALERT_NAME,s.ALERT_TYPE FROM T_ALERT_LOG l LEFT JOIN T_ALERT_SETTING s ON (l.ALERT_ID=s.ALERT_ID)
+		WHERE 
+		]]><if test="NOTIFY_STATUS != null">
+        	l.NOTIFY_STATUS=#{NOTIFY_STATUS} AND
+        </if><if test="ALERT_TYPE != null">
+        	s.ALERT_TYPE=#{ALERT_TYPE} AND
+        </if><![CDATA[
+		ALERT_TIME BETWEEN #{START_TIME} AND #{END_TIME} AND s.IS_VALID=1
+		ORDER BY NOTIFY_TIME desc  LIMIT #{START},#{ROWS}
+    ]]></select>
+    <select id="countAlertLog" resultType="int"><![CDATA[
+        SELECT count(*) FROM T_ALERT_LOG l LEFT JOIN T_ALERT_SETTING s ON (l.ALERT_ID=s.ALERT_ID)
+		WHERE 
+		]]><if test="NOTIFY_STATUS != null">
+        	l.NOTIFY_STATUS=#{NOTIFY_STATUS} AND
+        </if><if test="ALERT_TYPE != null">
+        	s.ALERT_TYPE=#{ALERT_TYPE} AND
+        </if><![CDATA[
+		ALERT_TIME BETWEEN #{START_TIME} AND #{END_TIME} AND s.IS_VALID=1
+    ]]></select>
+    
+    <insert id="saveAlertLog">
+    	INSERT INTO T_ALERT_LOG (ALERT_ID,ALERT_VALUE,CURRENT_VALUE,ALERT_TIME) VALUES (#{ALERT_ID},#{ALERT_VALUE},#{CURRENT_VALUE},now())
+    </insert>
+    <update id="updateAlertLogNotified">
+    	UPDATE T_ALERT_LOG SET NOTIFY_STATUS=#{NOTIFY_STATUS},NOTIFY_TIME=now() WHERE ID=#{ID}
+    </update>
+    
+    <select id="selectWeekly" resultType="map"><![CDATA[
+        SELECT ID,YEAR,MONTH,WEEK,PATH,FILE_TYPE,FILE_SIZE,FILE_NAME,w.USER_ID,DATE_FORMAT(IN_TIME,'%Y-%m-%d %H:%i:%S') IN_TIME,u.NICK_NAME 
+		FROM T_POM_WEEKLY w LEFT JOIN T_M_USERS u ON (w.USER_ID=u.USER_ID) 
+		WHERE
+		]]><if test="YEAR != null">
+        	`YEAR`=#{YEAR} AND
+        </if><if test="MONTH != null">
+        	`MONTH`=#{MONTH} AND
+        </if><if test="WEEK != null">
+        	`WEEK`=#{WEEK} AND
+        </if><![CDATA[
+        1=1
+		ORDER BY IN_TIME desc
+    ]]></select>
+    <insert id="saveWeekly">
+    	INSERT INTO T_POM_WEEKLY (YEAR,MONTH,WEEK,PATH,FILE_TYPE,FILE_SIZE,FILE_NAME,USER_ID,IN_TIME) VALUES (#{YEAR},#{MONTH},#{WEEK},#{PATH},#{FILE_TYPE},#{FILE_SIZE},#{FILE_NAME},#{USER_ID},now())
+    </insert>
+     <select id="selectWeeklyById" resultType="map"><![CDATA[
+        SELECT ID,YEAR,MONTH,WEEK,PATH,FILE_TYPE,FILE_SIZE,FILE_NAME
+		FROM T_POM_WEEKLY
+		WHERE ID=#{ID}
+    ]]></select>
+    <delete id="deleteWeeklyById">
+    	DELETE FROM T_POM_WEEKLY WHERE ID=#{ID}
+    </delete>
+    
+    <select id="selectWordsAlertTop" resultType="map"><![CDATA[
+        SELECT METRICS FROM (
+			SELECT s.METRICS,cast(l.CURRENT_VALUE AS signed integer) CURRENT_VALUE FROM T_ALERT_LOG l LEFT JOIN T_ALERT_SETTING s ON (l.ALERT_ID=s.ALERT_ID)
+			WHERE s.IS_VALID=1 AND l.ALERT_TIME BETWEEN #{START_TIME} AND #{END_TIME}
+		) a GROUP BY a.METRICS ORDER BY CURRENT_VALUE DESC limit #{TOP_NUM}
+    ]]></select>
+</mapper>

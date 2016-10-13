@@ -1,0 +1,85 @@
+﻿body {
+    width: 100%;
+    padding: 0px;
+	margin: 0px;
+	font-size:12px;
+}
+#divContainer{
+	width: 1205px;height:620px; 
+	margin: 0px auto;}
+#divMenu label {
+	padding-right: 10px;
+}
+.topBg{
+	background-color: #f7f3f7;
+}
+#base {
+	position: absolute;
+	z-index: 0;
+}
+
+.menu_item,.menu_item_select,.menu_item_over {
+	left: 0px;
+	width: 75px;
+	height: 58px;
+	padding-left: 5px;
+	/*border-bottom:2px solid white;*/
+}
+
+#u00 {
+	height: 1px;
+}
+
+.menu_item_select {
+	cursor: auto;
+	background-color: #48b;
+}
+.menu_item_over {
+	cursor: pointer;
+	background-color: #c8dcea;
+}
+.menu_item {
+	cursor: pointer;
+	background-color: #333;
+}
+
+#u24 {
+	position: absolute;
+	left: 1110px;
+	top: 39px;
+	width: 80px;
+	height: 27px;
+}
+
+.ax_h1 {
+	font-family: "Arial Bold", "Arial";
+	font-weight: 700;
+	font-style: normal;
+	font-size: 32px;
+	color: #333;
+	text-align: left;
+	line-height: normal;
+}
+
+.panel-header, .panel-body {
+	border-width: 0PX;
+	border-style: solid;
+}
+
+.tabs{
+	border-width: 0;
+}
+.tabs-header, .tabs-tool {
+	background-color: #AAA;
+	border-width: 0;
+}
+.tabs li{
+	width: 140px;
+	border-width: 0;
+}
+.tabs-inner{
+	width:122px;
+	border-top-width: 0;
+	border-left: 1px solid white;
+	border-right: 1px solid white;
+}
